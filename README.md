@@ -1,3 +1,4 @@
+
 # app.remapp
 
 RIAPS Energy Management App
@@ -118,3 +119,4 @@ InfluxDB is used as the data repository for the application. In total there are 
 | ID (string)      |
 | SoC (float)      |   
 
+=======
