@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# Setup some environment variables needed in mininet runs.
+
+# Root location of the example varcontrol app
+export APP='pwd'
+[ -z "$RIAPSHOME" ] && echo "Must set RIAPSHOME" && exit 1;
+[ -z "$RIAPSAPPS" ] && echo "Must set RIAPSAPPS" && exit 1;
+[ -z "$RIAPSDEV"  ] && echo "Must set RIAPSDEV"  && exit 1;
+
+
+# mn-related commands in the RIAPS source tree
+export RIAPSMN=$RIAPSHOME/../../mn/
+export PATH=$RIAPSMN:$PATH

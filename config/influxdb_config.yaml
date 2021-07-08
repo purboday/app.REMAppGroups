@@ -1,0 +1,47 @@
+# confguration file defining the data model for influx db logging
+
+db_drop: true
+db_host: 192.168.0.185
+db_name: riapsdb
+db_password: riaps
+db_port: 8086
+db_user: riaps
+
+# database column - table structure
+
+table_struct: 
+
+    ActualPower: 
+      measurement: "Actual Power" # Power consumption at the current timestep
+      tags: 
+        - type # {'BU' - Builings, 'EV' - EV Chargers, 'BESS" - Battery Units}
+        - ID # Individual load identifier that is sent in each power request message
+      value: power # real power in kW
+
+    PredictedPower: 
+      measurement: "Predicted Power" # Predicted power consumption for a future time horizon
+      tags: 
+        - type
+        - ID
+      value: power
+
+    DispatchedPower: 
+      measurement: "Dispatched Power" # Power to be dispatched as calculated by the coordinator for the entire time horizon
+      tags: 
+        - type
+        - ID
+      value: power
+
+    Grid: 
+      measurement: "Available Power" # Total power available from the grid for the entire time horizon
+      value: power
+
+    AggregatePower:
+      measurement: "Dispatched Grid Power" # Total power dispatched to the loads
+      value: power
+
+    SoC: 
+      measurement: "Battery SoC" # Battery State-of-Charge
+      tags:
+        - ID
+      value: SoC # Battery State-of-Charge expressed as a number in [0,1]

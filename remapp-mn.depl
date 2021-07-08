@@ -1,0 +1,22 @@
+// deploy on mininet
+app REMApp {
+	// host 1
+	on (192.168.57.1) 	BuildingActor(id='BU1a', grptype='BuildingManagerGroup', configfile = 'excel_config.yaml', model_path= 'my_lstm_model.h5');
+    on (192.168.57.1) 	ChargerActor(id='EV1a', grptype='ChargerManagerGroup', configfile = 'dbconfig.yaml', model_path= 'LSTM128LSTM64DEN24DEN24.h5');
+    on (192.168.57.1)  BESSActor(id='BESS1a', grptype = 'BESSManagerGroup', Rbess=500,Cbattery=1000,SoCl=0.2,SoCu=0.9,SoC0=0.5,SoCend=0.5, tStart = '2019-08-16 00:00:00');
+    on (192.168.57.1)  Aggregator(configfile = 'influxdb_config.yaml', id = 'AGGRa', grptype='CoordinatorGroup');
+    on (192.168.57.1)  DataLogger(configfile = 'influxdb_config.yaml');
+    on (192.168.57.1)  UtilityGrid(endpoint='192.168.57.1:9876');
+    
+    // host 2
+    on (192.168.57.2) 	BuildingActor(id='BU1b', grptype='BuildingManagerGroup', configfile = 'excel_config.yaml', model_path= 'my_lstm_model.h5');
+    on (192.168.57.2) 	ChargerActor(id='EV1b', grptype='ChargerManagerGroup', configfile = 'dbconfig.yaml', model_path= 'LSTM128LSTM64DEN24DEN24.h5');
+    on (192.168.57.2)  BESSActor(id='BESS1b', grptype = 'BESSManagerGroup', Rbess=500,Cbattery=1000,SoCl=0.2,SoCu=0.9,SoC0=0.5,SoCend=0.5, tStart = '2019-08-16 00:00:00');
+    on (192.168.57.2)  Aggregator(configfile = 'influxdb_config.yaml', id='AGGRb', grptype='CoordinatorGroup');
+    
+    // host 3
+   // on (192.168.57.3) 	BuildingActor(id='BU1c', grptype='BuildingManagerGroup', configfile = 'excel_config.yaml', model_path= 'my_lstm_model.h5');
+   // on (192.168.57.3) 	ChargerActor(id='EV1c', grptype='ChargerManagerGroup', configfile = 'dbconfig.yaml', model_path= 'LSTM128LSTM64DEN24DEN24.h5');
+   // on (192.168.57.3)  BESSActor(id='BESS1c', grptype = 'BESSManagerGroup', Rbess=500,Cbattery=1000,SoCl=0.2,SoCu=0.9,SoC0=0.5,SoCend=0.5, tStart = '2019-08-16 00:00:00');
+   // on (192.168.57.3)  Aggregator(configfile = 'influxdb_config.yaml', id='AGGRc', grptype='CoordinatorGroup');
+}

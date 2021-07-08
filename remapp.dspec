@@ -1,0 +1,8 @@
+app REMApp {
+	Aggregator copies 2;
+	colocate (UtilityGrid,DataLogger);
+	separate (BESSActor, BuildingActor, ChargerActor);
+	// deploy (UtilityGrid) on (192.168.57.1);
+	use limits for bbb on all;
+	network switch generic_switch;
+	}

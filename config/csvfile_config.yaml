@@ -1,0 +1,9 @@
+# configuration file for EventLogger device component
+filename: ft-logs.csv
+location: /home/riaps/ 
+headers: 
+        - Event 
+        - Group
+        - ID
+        - For 
+        - Timestamp

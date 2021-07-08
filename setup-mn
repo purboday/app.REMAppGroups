@@ -1,0 +1,8 @@
+#!/bin/bash
+
+# Setup some environment variables needed in mininet runs.
+
+# Root location of the app
+export APP='pwd'
+[ -z "$RIAPSHOME" ] && export RIAPSHOME=/usr/local/riaps   
+[ -z "$RIAPSAPPS" ] && export RIAPSAPPS=/home/riaps/riaps_apps

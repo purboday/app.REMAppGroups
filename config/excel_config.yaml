@@ -1,0 +1,101 @@
+---
+# Load Building data
+# mode - {'playback','realtime'} required parameter to identify the mode of operation
+# filename - if it is in playback mode, then this parameter contains the full path of the excel file
+# tStart - specify starting time as a string in the format 'YYYY-MM-DD HH:mm:ss'
+# Ts - Sample time in mins (int). Default = 60.
+# item_sheet_map: required parameter if mode is 'playback'. A dictionary of the query item to sheet mapping. The list of valied ites are {'TotalPower', 'Temp', 'HVAC', 'Lighting'}.
+# sheet_format: required parameter if mode is 'playback' . A dictionary of the sheets in the excel file with the column labels and their indices. The column label must be in the format "Building_Section_Unit_Type" where Unit can be further broken down into Unit = SubUnit1:SubUnit2... etc. For total building values the section and unit can be omitted, while for building independent values only the type will suffice. 
+filename: "Campus Data Download v3.xlsx"
+mode: playback
+tStart: "2019-08-16 00:00:00"
+item_sheet_map:
+  TotalPower: 
+          - kW_OAT
+  Temp: 
+    - kW_OAT
+    - AVG Temps
+
+  HVAC:
+    - CSG HVAC
+    - HTG HVAC
+
+  Lighting: 
+    - HTG LIghting
+    - CSG Lighting
+
+sheet_format: 
+  ? "AVG Temps"
+  : 
+    HT_HTE_AvgTemp1: 1
+    HT_HTE_AvgTemp2: 4
+    HT_HTE_Date1: 0
+    HT_HTE_Date2: 3
+    Prom_PromD_AvgTemp1: 7
+    Prom_PromD_AvgTemp2: 10
+    Prom_PromD_Date1: 6
+    Prom_PromD_Date2: 9
+    Prom_PromE_AvgTemp1: 13
+    Prom_PromE_AvgTemp2: 16
+    Prom_PromE_Date1: 12
+    Prom_PromE_Date2: 15
+  ? "CSG HVAC"
+  : 
+    CS_CSG_RTU1_Date: 0
+    CS_CSG_RTU1_HVACPower: 1
+    CS_CSG_RTU2_Date: 3
+    CS_CSG_RTU2_HVACPower: 4
+    CS_CSG_RTU3_Date: 6
+    CS_CSG_RTU3_HVACPower: 7
+    CS_CSG_RTU4_Date: 9
+    CS_CSG_RTU4_HVACPower: 10
+    CS_CSG_RTU5_Date: 12
+    CS_CSG_RTU5_HVACPower: 13  
+
+  ? "CSG Lighting"
+  : 
+    L1_Date: 0
+  ? "HTG HVAC"
+  : 
+    HT_HTG_M10:RTU3_Date: 6
+    HT_HTG_M10:RTU3_HVACPower: 7
+    HT_HTG_M11:RTU4_Date: 9
+    HT_HTG_M11:RTU4_HVACPower: 10
+    HT_HTG_M14:RTU1_Date: 0
+    HT_HTG_M14:RTU1_HVACPower: 1
+    HT_HTG_M7:RTU2_Date: 3
+    HT_HTG_M7:RTU2_HVACPower: 4  
+
+  ? "HTG LIghting"
+  : 
+
+    HT_HTG_2SL1:M15:2SL1_Date: 6
+    HT_HTG_2SL1:M15:2SL1_LightingPower: 7
+    HT_HTG_1EL1:M17:1EL1_Date: 9
+    HT_HTG_1EL1:M17:1EL1_LightingPower: 10
+    HT_HTG_2L2:M2:2L2_Date: 0
+    HT_HTG_2L2:M2:2L2_LightingPower: 1
+    HT_HTG_1L1:M4:1L1_Date: 3
+    HT_HTG_1L1:M4:1L1_LightingPower: 4
+
+  ? "CSG Lighting"
+  :  
+
+    CS_CSG_L1_Date: 0
+    CS_CSG_L1_LightingPower: 1
+    CS_CSG_L2_Date: 3
+    CS_CSG_L2_LightingPower: 4
+    CS_CSG_L3:M16:1L3_Date: 6
+    CS_CSG_L3:M16:1L3_LightingPower: 7
+    CS_CSG_TS:M18:1TS_Date: 9
+    CS_CSG_TS:M18:1TS_LightingPower: 10
+
+  kW_OAT:   
+    CS_Date: 9
+    CS_TotalPower: 10
+    Date: 0
+    HT_Date: 6
+    HT_TotalPower: 7
+    OutsideAirTemp: 1
+    Prom_Date: 3
+    Prom_TotalPower: 4 

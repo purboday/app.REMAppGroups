@@ -1,0 +1,11 @@
+
+        app REMApp {
+            on (192.168.57.1) Aggregator(configfile=, id=, grptype=) ;
+            on (192.168.57.1) BuildingActor(id=, grptype=, configfile=, model_path=) ;
+            on (192.168.57.2) Aggregator(configfile=, id=, grptype=) ;
+            on (192.168.57.2) ChargerActor(id=, grptype=, configfile=, model_path=) ;
+            on (192.168.57.3) BESSActor(id=, grptype=, Rbess=, Cbattery=, SoCl=, SoCu=, SoC0=, SoCend=, tStart=, Ts=) ;
+            on (192.168.57.3) DataLogger(configfile=) ;
+            on (192.168.57.3) UtilityGrid(endpoint=) ;
+            }
+        

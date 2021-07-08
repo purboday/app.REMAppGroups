@@ -1,0 +1,7 @@
+# mode - {'playback','realtime'} required parameter to identify the mode of operation
+# username, password and wsdl url for Chargepoint SOAP API if mode is realtime.
+
+mode: 'realtime'
+username: 'sample_name'
+password: 'sample_password'
+wsdl_url: 'https://webservices.chargepoint.com/cp_api_5.0.wsdl'

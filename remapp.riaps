@@ -1,0 +1,233 @@
+// RIAPS Energy management app
+
+app REMApp {
+
+message ChargerQry; 	// Query to charger interface
+message ChargerAns;		// Answer from charger interface; (Current Power, number of sessions, the charged energy for each session)
+message ChargerCmd;		// Command to charger (to set power); (Sessions to end if shed load)
+message ChargerAck;		// Ack message
+message ChargerUpdateData;  //Data send to predictive model
+message ChargerPrediction;  //Prediction send back to manager
+
+message BuildingQry;	// Query to building interface
+message BuildingAns; 	// Answer from building interface (Current Power, Outside Air Temperature, HVAC power, Current Indoor Sensor Temperature)
+message BuildingCmd;	// Command to charger (to set power) (Temperature offset)
+message BuildingAck;	// Ack message
+message BuildingUpdateData;  //Data send to predictive model
+message BuildingPrediction;  //Prediction send back to manager
+
+message BESSQry;	// Query to BESS interface
+message BESSAns; 	// Answer from BESS interface (Current Power, Outside Air Temperature, HVAC power, Current Indoor Sensor Temperature)
+message BESSCmd;	// Command to charger (to set power) (Temperature offset)
+message BESSAck;	// Ack message
+
+message PowerRequest; 		// Predicted load+flexbility (Predicted power for the next interval, available load shedding capacity for the next interval for each building, flexbility for each EV charging session)
+message PowerDispatched;
+
+message GridPower;		// Grid power (Available grid power for the next interval)
+message GridCmd;
+message LogData;
+message EventData;
+message EventLog;
+
+message BuildingManagerGroupMsg;
+message ChargerManagerGroupMsg;
+message BESSManagerGroupMsg;
+message CoordinatorGroupMsg;
+
+group BuildingManagerGroup with leader using BuildingManagerGroupMsg;
+group ChargerManagerGroup with leader using ChargerManagerGroupMsg;
+group BESSManagerGroup with leader using BESSManagerGroupMsg;
+group CoordinatorGroup with leader using CoordinatorGroupMsg;
+
+library config;
+library models;
+
+//////////////######Components for Charger######///////////
+// Device interface to charger system
+device ChargerInterface(configfile) {
+  inside relay; 							// inside port	
+  ans request : (ChargerQry, ChargerAns);	// query from manager
+  ans command : (ChargerCmd, ChargerAck);	// commands from manager
+}
+
+//device to house predictive model
+device ChargerPredictive(model_path){
+ ans updateAndPredict: (ChargerUpdateData,ChargerPrediction);
+}
+
+// Manager for charger system
+component ChargerManager(id, grptype) {
+  timer trigger 300 sec;						// timer to trigger a query on interface
+  qry poller: (ChargerQry, ChargerAns);		// query to interface
+  qry command: (ChargerCmd, ChargerAck);	// command to interface
+  qry updateAndPredict:(ChargerUpdateData,ChargerPrediction);  //added query port for predictive model device
+  pub reqPower: PowerRequest;					// predicted load
+  sub dspPower: PowerDispatched;
+  pub eventData : EventData;
+  timer tick;
+  timer votetrigger;
+}
+
+
+//////////////######Components for Building######///////////
+// Device interface to building system
+device BuildingInterface(configfile) {
+  inside relay;								// inside port
+  ans request : (BuildingQry, BuildingAns);	// queries from manager
+  ans command : (BuildingCmd, BuildingAck);	// commands from manager
+}
+
+//device to house predictive model
+device BuildingPredictive(model_path){
+ ans updateAndPredict: (BuildingUpdateData,BuildingPrediction);
+}
+
+// Manager for building system
+component BuildingManager(id, grptype) {
+  timer trigger 300 sec;						// timer to trigger a query on interface
+  qry poller : (BuildingQry, BuildingAns);	// query to interface
+  qry command: (BuildingCmd, BuildingAck);	// command to interface
+  qry updateAndPredict:(BuildingUpdateData,BuildingPrediction);  //added query port for predictive model device
+  pub reqPower: PowerRequest;					// predicted load
+  sub dspPower: PowerDispatched;
+  pub eventData: EventData;
+  timer tick;
+  timer votetrigger;
+}
+
+//////////////######Components for BESS######///////////
+// Device modeling a BESS
+device BESS(Rbess,Cbattery,SoCl,SoCu,SoC0,SoCend,tStart,Ts) {
+  inside relay;								// inside port
+  ans request : (BESSQry, BESSAns);	// queries from manager
+  ans command : (BESSCmd, BESSAck);	// commands from manager
+}
+
+
+// Manager for BESS
+component BESSManager(id, grptype) {
+  timer trigger 300 sec;						// timer to trigger a query on interface
+  qry poller : (BESSQry, BESSAns);	// query to interface
+  qry command: (BESSCmd, BESSAck);	// command to interface
+  pub reqPower: PowerRequest;					// predicted load
+  sub dspPower: PowerDispatched;
+  pub eventData: EventData;
+  timer tick;
+  timer actuatetrigger;
+  timer votetrigger;
+}
+
+
+device Grid(endpoint) {
+  inside trigger;
+  timer clock 300 sec;					// life signal
+  timer ticker 75 sec;					// timer to send out grid power
+  pub setPoint : GridCmd; 					// available power from grid
+}
+
+component GridManager() {
+	sub setPoint : GridCmd;
+	pub power : GridPower;
+	pub eventData : EventData;
+}
+
+component Coordinator(configfile, id, grptype) {
+   sub power: GridPower;				// available power from grid
+   sub reqPower : PowerRequest;				// predicted load
+   pub dspPower: PowerDispatched; 
+   pub logData : LogData;
+   pub eventData : EventData;
+   timer tick; 
+}
+
+// Logger
+component Logger(configfile) {
+	sub logData : LogData;
+	sub eventData : EventData;
+	pub eventLog : EventLog;
+}
+
+device EventLogger(configfile) {
+	sub eventLog : EventLog;
+	timer update 1 sec;
+}
+
+actor ChargerActor(id, grptype, configfile, model_path) {
+	
+   local ChargerQry, ChargerAns, ChargerCmd, ChargerAck, ChargerUpdateData, ChargerPrediction;
+   uses {
+			cpu max 30 % over 1;		// Hard limit, w/o 'max' = soft limit
+			// mem 200 mb;					// Mem limit
+			 // space 2048 mb;				// File space limit
+		}
+   {
+	charger : ChargerInterface(configfile = configfile);
+	manager : ChargerManager(id=id, grptype=grptype);
+    predictive : ChargerPredictive(model_path = model_path);
+   }
+}
+
+actor BuildingActor(id, grptype, configfile, model_path) {
+   local BuildingQry, BuildingAns, BuildingCmd, BuildingAck, BuildingUpdateData, BuildingPrediction;
+   uses {
+			cpu max 30 % over 1;		// Hard limit, w/o 'max' = soft limit
+			// mem 200 mb;					// Mem limit
+			// space 2048 mb;				// File space limit
+		}
+   {
+	building : BuildingInterface(configfile = configfile);
+	manager : BuildingManager(id=id, grptype=grptype);
+	predictive : BuildingPredictive(model_path = model_path);	
+   }
+}
+
+actor BESSActor(id, grptype, Rbess,Cbattery,SoCl,SoCu,SoC0,SoCend,tStart='',Ts=60) {
+   local BESSQry, BESSAns, BESSCmd, BESSAck;
+   uses {
+			cpu max 30 % over 1;		// Hard limit, w/o 'max' = soft limit
+			// mem 200 mb;					// Mem limit
+			// space 2048 mb;				// File space limit
+		}
+   {
+	bess : BESS(Rbess = Rbess,Cbattery=Cbattery,SoCl=SoCl,SoCu=SoCu,SoC0=SoC0,SoCend=SoCend,tStart=tStart,Ts=Ts);
+	manager : BESSManager(id=id, grptype=grptype);	
+   }
+}
+
+actor Aggregator(configfile, id, grptype) {
+	   uses {
+			cpu max 35 % over 1;		// Hard limit, w/o 'max' = soft limit
+			// mem 200 mb;					// Mem limit
+			// space 2048 mb;				// File space limit
+			net rate 40 kbps ceil 60 kbps burst 12 k; // Net limits
+		}
+   {
+	coordinator : Coordinator(configfile=configfile, id= id, grptype=grptype);
+   }
+ }
+ 
+actor DataLogger(configfile1, configfile2) {
+	local EventLog;
+	uses {
+			cpu max 25 % over 1;		// Hard limit, w/o 'max' = soft limit
+			// mem 200 mb;					// Mem limit
+			// space 2048 mb;				// File space limit
+			net rate 40 kbps ceil 60 kbps burst 12 k; // Net limits
+		}
+   {
+	logger: Logger(configfile=configfile1);
+	eventlogger : EventLogger(configfile = configfile2);
+   }
+ }
+ 
+actor UtilityGrid(endpoint) {
+	local GridCmd;
+   {
+	grid : Grid(endpoint = endpoint);
+	manager : GridManager();
+   }
+ }
+
+}
+

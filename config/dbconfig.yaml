@@ -1,0 +1,12 @@
+# database to load values
+# mode - {'playback','realtime'} required parameter to identify the mode of operation
+# dbname - if it is in playback mode, then this parameter contains the full path of the database file
+# tStart - specify starting time as a string in the format 'YYYY-MM-DD HH:mm:ss'
+# Ts - Sample time in mins (int)
+
+#mode: 'playback'
+#dbname: 'config/chargePoint2019_5min.db'
+mode: 'playbackCSV'
+filename: 'EV_power_profile_1hour.csv'
+Ts: 60
+tStart: "2019-08-16 08:00:00"

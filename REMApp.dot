@@ -1,0 +1,279 @@
+digraph REMApp {
+rankdir=TB;
+nodesep="0.1";
+ranksep="1.5";
+orientation=l;
+subgraph msgs {
+rank=min;
+PowerRequest [shape=ellipse];
+PowerDispatched [shape=ellipse];
+GridPower [shape=ellipse];
+LogData [shape=ellipse];
+}
+
+BuildingQry_BuildingAns_4 -> building_BuildingInterface_3;
+BuildingCmd_BuildingAck_5 -> building_BuildingInterface_3;
+manager_BuildingManager_6 -> PowerRequest;
+PowerDispatched -> manager_BuildingManager_6;
+manager_BuildingManager_6 -> BuildingQry_BuildingAns_4;
+manager_BuildingManager_6 -> BuildingCmd_BuildingAck_5;
+manager_BuildingManager_6 -> BuildingUpdateData_BuildingPrediction_7;
+BuildingUpdateData_BuildingPrediction_7 -> predictive_BuildingPredictive_8;
+ChargerQry_ChargerAns_12 -> charger_ChargerInterface_11;
+ChargerCmd_ChargerAck_13 -> charger_ChargerInterface_11;
+manager_ChargerManager_14 -> PowerRequest;
+PowerDispatched -> manager_ChargerManager_14;
+manager_ChargerManager_14 -> ChargerQry_ChargerAns_12;
+manager_ChargerManager_14 -> ChargerCmd_ChargerAck_13;
+manager_ChargerManager_14 -> ChargerUpdateData_ChargerPrediction_15;
+ChargerUpdateData_ChargerPrediction_15 -> predictive_ChargerPredictive_16;
+BESSQry_BESSAns_20 -> bess_BESS_19;
+BESSCmd_BESSAck_21 -> bess_BESS_19;
+manager_BESSManager_22 -> PowerRequest;
+PowerDispatched -> manager_BESSManager_22;
+manager_BESSManager_22 -> BESSQry_BESSAns_20;
+manager_BESSManager_22 -> BESSCmd_BESSAck_21;
+coordinator_Coordinator_24 -> PowerDispatched;
+coordinator_Coordinator_24 -> LogData;
+GridPower -> coordinator_Coordinator_24;
+PowerRequest -> coordinator_Coordinator_24;
+LogData -> logger_Logger_26;
+grid_Grid_29 -> GridCmd_30;
+manager_GridManager_31 -> GridPower;
+GridCmd_30 -> manager_GridManager_31;
+subgraph "cluster_192.168.57.1" {
+label="192.168.57.1";
+rankdir=BT;
+rank=max;
+subgraph BuildingActor_msgs_2 {
+rank=min;
+BuildingQry_BuildingAns_4 [label="{BuildingQry | BuildingAns}", shape=Mrecord];
+BuildingCmd_BuildingAck_5 [label="{BuildingCmd | BuildingAck}", shape=Mrecord];
+BuildingUpdateData_BuildingPrediction_7 [label="{BuildingUpdateData | BuildingPrediction}", shape=Mrecord];
+}
+
+subgraph cluster_BuildingActor_1 {
+label=BuildingActor;
+style=rounded;
+building_BuildingInterface_3 [label="building:BuildingInterface", rank=max, shape=component];
+manager_BuildingManager_6 [label="manager:BuildingManager", rank=max, shape=component];
+predictive_BuildingPredictive_8 [label="predictive:BuildingPredictive", rank=max, shape=component];
+}
+
+subgraph ChargerActor_msgs_10 {
+rank=min;
+ChargerQry_ChargerAns_12 [label="{ChargerQry | ChargerAns}", shape=Mrecord];
+ChargerCmd_ChargerAck_13 [label="{ChargerCmd | ChargerAck}", shape=Mrecord];
+ChargerUpdateData_ChargerPrediction_15 [label="{ChargerUpdateData | ChargerPrediction}", shape=Mrecord];
+}
+
+subgraph cluster_ChargerActor_9 {
+label=ChargerActor;
+style=rounded;
+charger_ChargerInterface_11 [label="charger:ChargerInterface", rank=max, shape=component];
+manager_ChargerManager_14 [label="manager:ChargerManager", rank=max, shape=component];
+predictive_ChargerPredictive_16 [label="predictive:ChargerPredictive", rank=max, shape=component];
+}
+
+subgraph BESSActor_msgs_18 {
+rank=min;
+BESSQry_BESSAns_20 [label="{BESSQry | BESSAns}", shape=Mrecord];
+BESSCmd_BESSAck_21 [label="{BESSCmd | BESSAck}", shape=Mrecord];
+}
+
+subgraph cluster_BESSActor_17 {
+label=BESSActor;
+style=rounded;
+bess_BESS_19 [label="bess:BESS", rank=max, shape=component];
+manager_BESSManager_22 [label="manager:BESSManager", rank=max, shape=component];
+}
+
+subgraph cluster_Aggregator_23 {
+label=Aggregator;
+style=rounded;
+coordinator_Coordinator_24 [label="coordinator:Coordinator", rank=max, shape=component];
+}
+
+subgraph cluster_DataLogger_25 {
+label=DataLogger;
+style=rounded;
+logger_Logger_26 [label="logger:Logger", rank=max, shape=component];
+}
+
+subgraph UtilityGrid_msgs_28 {
+rank=min;
+GridCmd_30 [label=GridCmd, shape=ellipse];
+}
+
+subgraph cluster_UtilityGrid_27 {
+label=UtilityGrid;
+style=rounded;
+grid_Grid_29 [label="grid:Grid", rank=max, shape=component];
+manager_GridManager_31 [label="manager:GridManager", rank=max, shape=component];
+}
+
+}
+
+BuildingQry_BuildingAns_35 -> building_BuildingInterface_34;
+BuildingCmd_BuildingAck_36 -> building_BuildingInterface_34;
+manager_BuildingManager_37 -> PowerRequest;
+PowerDispatched -> manager_BuildingManager_37;
+manager_BuildingManager_37 -> BuildingQry_BuildingAns_35;
+manager_BuildingManager_37 -> BuildingCmd_BuildingAck_36;
+manager_BuildingManager_37 -> BuildingUpdateData_BuildingPrediction_38;
+BuildingUpdateData_BuildingPrediction_38 -> predictive_BuildingPredictive_39;
+ChargerQry_ChargerAns_43 -> charger_ChargerInterface_42;
+ChargerCmd_ChargerAck_44 -> charger_ChargerInterface_42;
+manager_ChargerManager_45 -> PowerRequest;
+PowerDispatched -> manager_ChargerManager_45;
+manager_ChargerManager_45 -> ChargerQry_ChargerAns_43;
+manager_ChargerManager_45 -> ChargerCmd_ChargerAck_44;
+manager_ChargerManager_45 -> ChargerUpdateData_ChargerPrediction_46;
+ChargerUpdateData_ChargerPrediction_46 -> predictive_ChargerPredictive_47;
+BESSQry_BESSAns_51 -> bess_BESS_50;
+BESSCmd_BESSAck_52 -> bess_BESS_50;
+manager_BESSManager_53 -> PowerRequest;
+PowerDispatched -> manager_BESSManager_53;
+manager_BESSManager_53 -> BESSQry_BESSAns_51;
+manager_BESSManager_53 -> BESSCmd_BESSAck_52;
+coordinator_Coordinator_55 -> PowerDispatched;
+coordinator_Coordinator_55 -> LogData;
+GridPower -> coordinator_Coordinator_55;
+PowerRequest -> coordinator_Coordinator_55;
+subgraph "cluster_192.168.57.2" {
+label="192.168.57.2";
+rankdir=BT;
+rank=max;
+subgraph BuildingActor_msgs_33 {
+rank=min;
+BuildingQry_BuildingAns_35 [label="{BuildingQry | BuildingAns}", shape=Mrecord];
+BuildingCmd_BuildingAck_36 [label="{BuildingCmd | BuildingAck}", shape=Mrecord];
+BuildingUpdateData_BuildingPrediction_38 [label="{BuildingUpdateData | BuildingPrediction}", shape=Mrecord];
+}
+
+subgraph cluster_BuildingActor_32 {
+label=BuildingActor;
+style=rounded;
+building_BuildingInterface_34 [label="building:BuildingInterface", rank=max, shape=component];
+manager_BuildingManager_37 [label="manager:BuildingManager", rank=max, shape=component];
+predictive_BuildingPredictive_39 [label="predictive:BuildingPredictive", rank=max, shape=component];
+}
+
+subgraph ChargerActor_msgs_41 {
+rank=min;
+ChargerQry_ChargerAns_43 [label="{ChargerQry | ChargerAns}", shape=Mrecord];
+ChargerCmd_ChargerAck_44 [label="{ChargerCmd | ChargerAck}", shape=Mrecord];
+ChargerUpdateData_ChargerPrediction_46 [label="{ChargerUpdateData | ChargerPrediction}", shape=Mrecord];
+}
+
+subgraph cluster_ChargerActor_40 {
+label=ChargerActor;
+style=rounded;
+charger_ChargerInterface_42 [label="charger:ChargerInterface", rank=max, shape=component];
+manager_ChargerManager_45 [label="manager:ChargerManager", rank=max, shape=component];
+predictive_ChargerPredictive_47 [label="predictive:ChargerPredictive", rank=max, shape=component];
+}
+
+subgraph BESSActor_msgs_49 {
+rank=min;
+BESSQry_BESSAns_51 [label="{BESSQry | BESSAns}", shape=Mrecord];
+BESSCmd_BESSAck_52 [label="{BESSCmd | BESSAck}", shape=Mrecord];
+}
+
+subgraph cluster_BESSActor_48 {
+label=BESSActor;
+style=rounded;
+bess_BESS_50 [label="bess:BESS", rank=max, shape=component];
+manager_BESSManager_53 [label="manager:BESSManager", rank=max, shape=component];
+}
+
+subgraph cluster_Aggregator_54 {
+label=Aggregator;
+style=rounded;
+coordinator_Coordinator_55 [label="coordinator:Coordinator", rank=max, shape=component];
+}
+
+}
+
+BuildingQry_BuildingAns_59 -> building_BuildingInterface_58;
+BuildingCmd_BuildingAck_60 -> building_BuildingInterface_58;
+manager_BuildingManager_61 -> PowerRequest;
+PowerDispatched -> manager_BuildingManager_61;
+manager_BuildingManager_61 -> BuildingQry_BuildingAns_59;
+manager_BuildingManager_61 -> BuildingCmd_BuildingAck_60;
+manager_BuildingManager_61 -> BuildingUpdateData_BuildingPrediction_62;
+BuildingUpdateData_BuildingPrediction_62 -> predictive_BuildingPredictive_63;
+ChargerQry_ChargerAns_67 -> charger_ChargerInterface_66;
+ChargerCmd_ChargerAck_68 -> charger_ChargerInterface_66;
+manager_ChargerManager_69 -> PowerRequest;
+PowerDispatched -> manager_ChargerManager_69;
+manager_ChargerManager_69 -> ChargerQry_ChargerAns_67;
+manager_ChargerManager_69 -> ChargerCmd_ChargerAck_68;
+manager_ChargerManager_69 -> ChargerUpdateData_ChargerPrediction_70;
+ChargerUpdateData_ChargerPrediction_70 -> predictive_ChargerPredictive_71;
+BESSQry_BESSAns_75 -> bess_BESS_74;
+BESSCmd_BESSAck_76 -> bess_BESS_74;
+manager_BESSManager_77 -> PowerRequest;
+PowerDispatched -> manager_BESSManager_77;
+manager_BESSManager_77 -> BESSQry_BESSAns_75;
+manager_BESSManager_77 -> BESSCmd_BESSAck_76;
+coordinator_Coordinator_79 -> PowerDispatched;
+coordinator_Coordinator_79 -> LogData;
+GridPower -> coordinator_Coordinator_79;
+PowerRequest -> coordinator_Coordinator_79;
+subgraph "cluster_192.168.57.3" {
+label="192.168.57.3";
+rankdir=BT;
+rank=max;
+subgraph BuildingActor_msgs_57 {
+rank=min;
+BuildingQry_BuildingAns_59 [label="{BuildingQry | BuildingAns}", shape=Mrecord];
+BuildingCmd_BuildingAck_60 [label="{BuildingCmd | BuildingAck}", shape=Mrecord];
+BuildingUpdateData_BuildingPrediction_62 [label="{BuildingUpdateData | BuildingPrediction}", shape=Mrecord];
+}
+
+subgraph cluster_BuildingActor_56 {
+label=BuildingActor;
+style=rounded;
+building_BuildingInterface_58 [label="building:BuildingInterface", rank=max, shape=component];
+manager_BuildingManager_61 [label="manager:BuildingManager", rank=max, shape=component];
+predictive_BuildingPredictive_63 [label="predictive:BuildingPredictive", rank=max, shape=component];
+}
+
+subgraph ChargerActor_msgs_65 {
+rank=min;
+ChargerQry_ChargerAns_67 [label="{ChargerQry | ChargerAns}", shape=Mrecord];
+ChargerCmd_ChargerAck_68 [label="{ChargerCmd | ChargerAck}", shape=Mrecord];
+ChargerUpdateData_ChargerPrediction_70 [label="{ChargerUpdateData | ChargerPrediction}", shape=Mrecord];
+}
+
+subgraph cluster_ChargerActor_64 {
+label=ChargerActor;
+style=rounded;
+charger_ChargerInterface_66 [label="charger:ChargerInterface", rank=max, shape=component];
+manager_ChargerManager_69 [label="manager:ChargerManager", rank=max, shape=component];
+predictive_ChargerPredictive_71 [label="predictive:ChargerPredictive", rank=max, shape=component];
+}
+
+subgraph BESSActor_msgs_73 {
+rank=min;
+BESSQry_BESSAns_75 [label="{BESSQry | BESSAns}", shape=Mrecord];
+BESSCmd_BESSAck_76 [label="{BESSCmd | BESSAck}", shape=Mrecord];
+}
+
+subgraph cluster_BESSActor_72 {
+label=BESSActor;
+style=rounded;
+bess_BESS_74 [label="bess:BESS", rank=max, shape=component];
+manager_BESSManager_77 [label="manager:BESSManager", rank=max, shape=component];
+}
+
+subgraph cluster_Aggregator_78 {
+label=Aggregator;
+style=rounded;
+coordinator_Coordinator_79 [label="coordinator:Coordinator", rank=max, shape=component];
+}
+
+}
+
+}
